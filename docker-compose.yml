@@ -1,0 +1,146 @@
+networks:
+  default:
+    name: cockroachdb-net
+
+volumes:
+  roach-db-1-data:
+    name: roach-db-1-data
+  roach-db-2-data:
+    name: roach-db-2-data
+  roach-db-3-data:
+    name: roach-db-3-data
+
+services:
+  cockroach-db-1:
+    image: cockroachdb/cockroach:latest-v23.1
+    hostname: cockroach-db-1.local
+    command: >
+      start 
+      --certs-dir=/certs
+      --advertise-addr=cockroach-db-1.local:26357
+      --http-addr=cockroach-db-1.local:8080
+      --listen-addr=cockroach-db-1.local:26357
+      --sql-addr=cockroach-db-1.local:26257
+      --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
+    volumes:
+      - ./node-1-certs:/certs
+      - roach-db-1-data:/cockroach/cockroach-data
+    ports:
+      - 127.0.0.1:8081:8080 # allow console access only from localhost
+    stop_grace_period: 20s
+    depends_on:
+      cluster-create-certs:
+        condition: service_completed_successfully
+    networks:
+      - default
+
+  cockroach-db-2:
+    image: cockroachdb/cockroach:latest-v23.1
+    hostname: cockroach-db-2.local
+    command: >
+      start 
+      --certs-dir=/certs
+      --advertise-addr=cockroach-db-2.local:26357
+      --http-addr=cockroach-db-2.local:8080
+      --listen-addr=cockroach-db-2.local:26357
+      --sql-addr=cockroach-db-2.local:26257
+      --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
+    volumes:
+      - ./node-2-certs:/certs
+      - roach-db-2-data:/cockroach/cockroach-data
+    ports:
+      - 127.0.0.1:8082:8080
+    stop_grace_period: 20s
+    depends_on:
+      cluster-create-certs:
+        condition: service_completed_successfully
+    networks:
+      - default
+
+  cockroach-db-3:
+    image: cockroachdb/cockroach:latest-v23.1
+    hostname: cockroach-db-3.local
+    command: >
+      start 
+      --certs-dir=/certs
+      --advertise-addr=cockroach-db-3.local:26357
+      --http-addr=cockroach-db-3.local:8080
+      --listen-addr=cockroach-db-3.local:26357
+      --sql-addr=cockroach-db-3.local:26257
+      --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
+    volumes:
+      - ./node-3-certs:/certs
+      - roach-db-3-data:/cockroach/cockroach-data
+    ports:
+      - 127.0.0.1:8083:8080
+    stop_grace_period: 20s
+    depends_on:
+      cluster-create-certs:
+        condition: service_completed_successfully
+    networks:
+      - default
+
+  cluster-create-certs:
+    # this sets up the certs for all the cluster nodes
+    # https://www.cockroachlabs.com/docs/stable/deploy-cockroachdb-on-premises#step-2-generate-certificates
+    image: cockroachdb/cockroach:latest-v23.1
+
+    volumes:
+      - ./create-cluster-certs.sh:/scripts/create-cluster-certs.sh
+      - ./certs:/certs
+      - ./ca-key:/ca-key
+      - ./node-1-certs:/node-1-certs
+      - ./node-2-certs:/node-2-certs
+      - ./node-3-certs:/node-3-certs
+    
+    # override the entrypoint because the Dockerfile runs its shell script in
+    # the entrypoint. Seems like we can't override the entrypoint and the
+    # command in separate keys
+    # entrypoint: >
+    #   /bin/bash -c "
+    #     sleep 20; echo lala
+    #   "
+    # entrypoint: |
+    #   bash -c "
+    #     sleep 20; echo lala
+    #   "
+
+    # this fails:
+    # entrypoint: /bin/bash
+    # command: sleep 20; echo lala
+    entrypoint: /scripts/create-cluster-certs.sh
+    networks:
+      - default
+
+  cluster-init:
+    # https://www.cockroachlabs.com/docs/stable/cockroach-init#initialize-a-cluster-from-another-machine
+    image: cockroachdb/cockroach:latest-v23.1
+    entrypoint: /scripts/init-cluster.sh
+    # |
+    #   bash -c "
+    #     sleep 10
+    #     # cockroach cert list --certs-dir=/certs
+    #     cockroach init --certs-dir=/certs --host=cockroach-db-1.local:26357
+    #   "
+    volumes:
+      - ./init-cluster.sh:/scripts/init-cluster.sh
+      - ./certs:/certs
+    depends_on:
+      cockroach-db-1:
+        condition: service_started
+      cockroach-db-2:
+        condition: service_started
+      cockroach-db-3:
+        condition: service_started
+    networks:
+      - default
+
+# use the cockroach cli from one of the instances to reach another, using the root user and user cert
+# docker exec -it cockroach-db-cluster-cockroach-db-3-1 ./cockroach --host=cockroach-db-2.local:26257 --user=root --certs-dir=/certs --database defaultdb sql
+# docker exec -it cockroach-db-cluster-cockroach-db-3-1 ./cockroach --host=cockroach-db-1.local:26257 --user=root --certs-dir=/certs --database defaultdb sql
+
+# https://www.cockroachlabs.com/docs/stable/create-user
+# ALTER USER root WITH PASSWORD 'An0ther$tr0nGpassW0rD'
+# CREATE DATABASE IF NOT EXISTS pyserver;
+# CREATE USER IF NOT EXISTS pyserver WITH PASSWORD pyserver;
+# GRANT ALL PRIVILEGES TO USER pyserver;
