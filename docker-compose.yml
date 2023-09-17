@@ -17,18 +17,18 @@ services:
     command: >
       start 
       --certs-dir=/certs
-      --advertise-addr=cockroach-db-1.local:26357
-      --http-addr=cockroach-db-1.local:8080
-      --listen-addr=cockroach-db-1.local:26357
-      --sql-addr=cockroach-db-1.local:26257
-      --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
+      --advertise-addr=cockroach-db-1.local:$CLUSTER_GRPC_PORT
+      --http-addr=cockroach-db-1.local:$CONSOLE_HTTP_PORT
+      --listen-addr=cockroach-db-1.local:$CLUSTER_GRPC_PORT
+      --sql-addr=cockroach-db-1.local:$CLIENT_SQL_PORT
+      --join=cockroach-db-1.local:$CLUSTER_GRPC_PORT,cockroach-db-2.local:$CLUSTER_GRPC_PORT,cockroach-db-3.local:$CLUSTER_GRPC_PORT
     volumes:
       - ./certs/ca.crt:/certs/ca.crt:ro
       - ./certs/node-1.crt:/certs/node.crt:ro
       - ./certs/node-1.key:/certs/node.key:ro
       - roach-db-1-data:/cockroach/cockroach-data
     ports:
-      - 127.0.0.1:8081:8080 # allow console access only from localhost
+      - 127.0.0.1:8081:$CONSOLE_HTTP_PORT # allow console access only from localhost
     stop_grace_period: 20s
     depends_on:
       cluster-create-certs:
@@ -42,18 +42,18 @@ services:
     command: >
       start 
       --certs-dir=/certs
-      --advertise-addr=cockroach-db-2.local:26357
-      --http-addr=cockroach-db-2.local:8080
-      --listen-addr=cockroach-db-2.local:26357
-      --sql-addr=cockroach-db-2.local:26257
-      --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
+      --advertise-addr=cockroach-db-2.local:$CLUSTER_GRPC_PORT
+      --http-addr=cockroach-db-2.local:$CONSOLE_HTTP_PORT
+      --listen-addr=cockroach-db-2.local:$CLUSTER_GRPC_PORT
+      --sql-addr=cockroach-db-2.local:$CLIENT_SQL_PORT
+      --join=cockroach-db-1.local:$CLUSTER_GRPC_PORT,cockroach-db-2.local:$CLUSTER_GRPC_PORT,cockroach-db-3.local:$CLUSTER_GRPC_PORT
     volumes:
       - ./certs/ca.crt:/certs/ca.crt:ro
       - ./certs/node-2.crt:/certs/node.crt:ro
       - ./certs/node-2.key:/certs/node.key:ro
       - roach-db-2-data:/cockroach/cockroach-data
     ports:
-      - 127.0.0.1:8082:8080
+      - 127.0.0.1:8082:$CONSOLE_HTTP_PORT
     stop_grace_period: 20s
     depends_on:
       cluster-create-certs:
@@ -67,18 +67,18 @@ services:
     command: >
       start 
       --certs-dir=/certs
-      --advertise-addr=cockroach-db-3.local:26357
-      --http-addr=cockroach-db-3.local:8080
-      --listen-addr=cockroach-db-3.local:26357
-      --sql-addr=cockroach-db-3.local:26257
-      --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
+      --advertise-addr=cockroach-db-3.local:$CLUSTER_GRPC_PORT
+      --http-addr=cockroach-db-3.local:$CONSOLE_HTTP_PORT
+      --listen-addr=cockroach-db-3.local:$CLUSTER_GRPC_PORT
+      --sql-addr=cockroach-db-3.local:$CLIENT_SQL_PORT
+      --join=cockroach-db-1.local:$CLUSTER_GRPC_PORT,cockroach-db-2.local:$CLUSTER_GRPC_PORT,cockroach-db-3.local:$CLUSTER_GRPC_PORT
     volumes:
       - ./certs/ca.crt:/certs/ca.crt:ro
       - ./certs/node-3.crt:/certs/node.crt:ro
       - ./certs/node-3.key:/certs/node.key:ro
       - roach-db-3-data:/cockroach/cockroach-data
     ports:
-      - 127.0.0.1:8083:8080
+      - 127.0.0.1:8083:$CONSOLE_HTTP_PORT
     stop_grace_period: 20s
     depends_on:
       cluster-create-certs:
@@ -105,6 +105,7 @@ services:
     # https://www.cockroachlabs.com/docs/stable/cockroach-init#initialize-a-cluster-from-another-machine
     image: cockroachdb/cockroach:latest-v23.1
     entrypoint: /scripts/init-cluster.sh
+    env_file: .env
     volumes:
       - ./init-cluster.sh:/scripts/init-cluster.sh
       - ./certs:/certs
@@ -122,8 +123,6 @@ services:
 # docker exec -it cockroach-db-cluster-cockroach-db-3-1 ./cockroach --host=cockroach-db-2.local:26257 --user=root --certs-dir=/certs --database defaultdb sql
 # docker exec -it cockroach-db-cluster-cockroach-db-3-1 ./cockroach --host=cockroach-db-1.local:26257 --user=root --certs-dir=/certs --database defaultdb sql
 
-# https://www.cockroachlabs.com/docs/stable/create-user
-# ALTER USER root WITH PASSWORD 'An0ther$tr0nGpassW0rD'
 # CREATE DATABASE IF NOT EXISTS pyserver;
 # CREATE USER IF NOT EXISTS pyserver WITH PASSWORD pyserver;
 # GRANT ALL PRIVILEGES TO USER pyserver;

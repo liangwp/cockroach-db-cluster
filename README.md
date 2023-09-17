@@ -5,33 +5,55 @@ Experimental CockroachDB cluster setup in docker.
 This is suitable for:
 
 * Local testing and learning
-* Bare-metal deployment
+* Bare-metal (offline) deployment
 
-Considerations:
+### Features
 
-1. multiple instances / containers
-1. security
-1. user creation
-1. database administration for multiple users / projects
-
-TODO:
-
-- [x] Set up something to create the cluster automatically.
+- [x] Automatically create the cluster.
     * https://www.cockroachlabs.com/docs/stable/deploy-cockroachdb-on-premises
-- [x] With proper security
-- [ ] Should not create certs and init cluster unless necessary
-- [ ] With load balancing
-- [ ] Some automated way to create databases (for multiple projects)
-- [ ] And the users with the right privileges to access the respective databases.
+    - [x] Create certs from short-lived container, self-signed certificate for
+          local testing
+    - [x] Does not create certs unnecessarily
+    - [x] Init cluster from short-lived container, safe to init even if cluster
+          already exists
+- [ ] Load balancing across cluster
+    - [ ] for http console
+    - [ ] for sql clients
+- [ ] Set up automation for using the cluster with multiple projects
+      (assume one project uses one database)
+    - [ ] Script for creating a database and its user
 
+### Prerequisites
 
-Quickstart:
+Tested on the following:
+- Linux ([EndeavourOS](https://endeavouros.com/))
+- [docker](https://www.docker.com/get-started/) >= 24.0.5
+- docker compose >= 2.20.3
 
-1. `docker compose up`:
-    - create the certs
-    - start the cluster instances
-    - and init the cluster
-    
-1. `sudo ./cleanup.sh`: Remove the various host-level directories that were
-   created by `docker compose up`.
+### Quickstart
 
+1. Clone this repository
+    - `cd cockroach-db-cluster`: enter the project root directory.
+    - Unless otherwise stated, all commands in documentation are meant to be
+      run from this directory.
+1. `cp .env.example .env`
+    - Edit variables as necessary. Default values in `.env.example` should be
+      sufficient to simply run the system.
+    - `.env` file should contain deployment-specific values and should not be
+      committed to the repository.
+1. `docker compose up`: Sets up a 3-instance cluster
+    - Create the required certs
+    - Create a docker volume for each instance
+    - Start the cluster instances
+    - Init the cluster
+    - Set a password for the `root` user
+1. Using the current configs, cockroachdb console is served by all 3 instances
+   through https. Browser will complain about security but that's fine for a
+   dev/test cluster.
+    - https://localhost:8081
+    - https://localhost:8082
+    - https://localhost:8083
+1. `docker compose down`: Stop the cluster
+    - Running `docker compose up` again will revive the cluster.
+1. `sudo ./cleanup.sh`: Remove the certs and docker volumes that were
+   created.

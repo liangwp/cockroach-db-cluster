@@ -1,3 +1,4 @@
+.env
 ca-key
 certs
 node-1-certs
