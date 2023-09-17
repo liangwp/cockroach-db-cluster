@@ -90,30 +90,13 @@ services:
     # this sets up the certs for all the cluster nodes
     # https://www.cockroachlabs.com/docs/stable/deploy-cockroachdb-on-premises#step-2-generate-certificates
     image: cockroachdb/cockroach:latest-v23.1
-
     volumes:
       - ./create-cluster-certs.sh:/scripts/create-cluster-certs.sh
       - ./certs:/certs
       - ./ca-key:/ca-key
-      # - ./node-1-certs:/node-1-certs
-      # - ./node-2-certs:/node-2-certs
-      # - ./node-3-certs:/node-3-certs
-    
-    # override the entrypoint because the Dockerfile runs its shell script in
+    # Override the entrypoint because the Dockerfile runs its shell script in
     # the entrypoint. Seems like we can't override the entrypoint and the
     # command in separate keys
-    # entrypoint: >
-    #   /bin/bash -c "
-    #     sleep 20; echo lala
-    #   "
-    # entrypoint: |
-    #   bash -c "
-    #     sleep 20; echo lala
-    #   "
-
-    # this fails:
-    # entrypoint: /bin/bash
-    # command: sleep 20; echo lala
     entrypoint: /scripts/create-cluster-certs.sh
     networks:
       - default
@@ -122,12 +105,6 @@ services:
     # https://www.cockroachlabs.com/docs/stable/cockroach-init#initialize-a-cluster-from-another-machine
     image: cockroachdb/cockroach:latest-v23.1
     entrypoint: /scripts/init-cluster.sh
-    # |
-    #   bash -c "
-    #     sleep 10
-    #     # cockroach cert list --certs-dir=/certs
-    #     cockroach init --certs-dir=/certs --host=cockroach-db-1.local:26357
-    #   "
     volumes:
       - ./init-cluster.sh:/scripts/init-cluster.sh
       - ./certs:/certs
