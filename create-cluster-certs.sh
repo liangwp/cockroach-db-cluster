@@ -12,9 +12,8 @@ fi
 if [ ! -f "/certs/node-1.crt" ]; then
     echo "Creating Node 1 cert..."
     cockroach cert create-node cockroach-db-1.local localhost 127.0.0.1 --certs-dir=/certs --ca-key=/ca-key/ca.key
-    cp /certs/ca.crt /node-1-certs/
-    mv /certs/node.crt /node-1-certs/
-    mv /certs/node.key /node-1-certs/
+    mv /certs/node.crt /certs/node-1.crt
+    mv /certs/node.key /certs/node-1.key
 else
     echo "Node 1 cert already exists..."
 fi
@@ -22,9 +21,8 @@ fi
 if [ ! -f "/certs/node-2.crt" ]; then
     echo "Creating Node 2 cert..."
     cockroach cert create-node cockroach-db-2.local localhost 127.0.0.1 --certs-dir=/certs --ca-key=/ca-key/ca.key
-    cp /certs/ca.crt /node-2-certs/
-    mv /certs/node.crt /node-2-certs/
-    mv /certs/node.key /node-2-certs/
+    mv /certs/node.crt /certs/node-2.crt
+    mv /certs/node.key /certs/node-2.key
 else
     echo "Node 2 cert already exists..."
 fi
@@ -32,9 +30,8 @@ fi
 if [ ! -f "/certs/node-3.crt" ]; then
     echo "Creating Node 3 cert..."
     cockroach cert create-node cockroach-db-3.local localhost 127.0.0.1 --certs-dir=/certs --ca-key=/ca-key/ca.key
-    cp /certs/ca.crt /node-3-certs/
-    mv /certs/node.crt /node-3-certs/
-    mv /certs/node.key /node-3-certs/
+    mv /certs/node.crt /certs/node-3.crt
+    mv /certs/node.key /certs/node-3.key
 else
     echo "Node 3 cert already exists..."
 fi

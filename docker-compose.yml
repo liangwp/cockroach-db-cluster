@@ -23,7 +23,9 @@ services:
       --sql-addr=cockroach-db-1.local:26257
       --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
     volumes:
-      - ./node-1-certs:/certs
+      - ./certs/ca.crt:/certs/ca.crt:ro
+      - ./certs/node-1.crt:/certs/node.crt:ro
+      - ./certs/node-1.key:/certs/node.key:ro
       - roach-db-1-data:/cockroach/cockroach-data
     ports:
       - 127.0.0.1:8081:8080 # allow console access only from localhost
@@ -46,7 +48,9 @@ services:
       --sql-addr=cockroach-db-2.local:26257
       --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
     volumes:
-      - ./node-2-certs:/certs
+      - ./certs/ca.crt:/certs/ca.crt:ro
+      - ./certs/node-2.crt:/certs/node.crt:ro
+      - ./certs/node-2.key:/certs/node.key:ro
       - roach-db-2-data:/cockroach/cockroach-data
     ports:
       - 127.0.0.1:8082:8080
@@ -69,7 +73,9 @@ services:
       --sql-addr=cockroach-db-3.local:26257
       --join=cockroach-db-1.local:26357,cockroach-db-2.local:26357,cockroach-db-3.local:26357
     volumes:
-      - ./node-3-certs:/certs
+      - ./certs/ca.crt:/certs/ca.crt:ro
+      - ./certs/node-3.crt:/certs/node.crt:ro
+      - ./certs/node-3.key:/certs/node.key:ro
       - roach-db-3-data:/cockroach/cockroach-data
     ports:
       - 127.0.0.1:8083:8080
@@ -89,9 +95,9 @@ services:
       - ./create-cluster-certs.sh:/scripts/create-cluster-certs.sh
       - ./certs:/certs
       - ./ca-key:/ca-key
-      - ./node-1-certs:/node-1-certs
-      - ./node-2-certs:/node-2-certs
-      - ./node-3-certs:/node-3-certs
+      # - ./node-1-certs:/node-1-certs
+      # - ./node-2-certs:/node-2-certs
+      # - ./node-3-certs:/node-3-certs
     
     # override the entrypoint because the Dockerfile runs its shell script in
     # the entrypoint. Seems like we can't override the entrypoint and the
