@@ -59,5 +59,5 @@ Tested on the following:
     - https://localhost:8080
 1. `docker compose down`: Stop the cluster
     - Running `docker compose up` again will revive the cluster.
-1. `sudo ./cleanup.sh`: Remove the certs and docker volumes that were
+1. `sudo ./scripts/destroy-cluster.sh`: Remove the certs and docker volumes that were
    created.

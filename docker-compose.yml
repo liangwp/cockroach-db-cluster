@@ -113,7 +113,7 @@ services:
     # https://www.cockroachlabs.com/docs/stable/deploy-cockroachdb-on-premises#step-2-generate-certificates
     image: cockroachdb/cockroach:latest-v23.1
     volumes:
-      - ./create-cluster-certs.sh:/scripts/create-cluster-certs.sh
+      - ./src/create-cluster-certs.sh:/scripts/create-cluster-certs.sh
       - ./certs:/certs
       - ./ca-key:/ca-key
     # Override the entrypoint because the Dockerfile runs its shell script in
@@ -129,7 +129,7 @@ services:
     entrypoint: /scripts/init-cluster.sh
     env_file: .env
     volumes:
-      - ./init-cluster.sh:/scripts/init-cluster.sh
+      - ./src/init-cluster.sh:/scripts/init-cluster.sh
       - ./certs:/certs
     depends_on:
       # https://www.cockroachlabs.com/docs/stable/monitoring-and-alerting#health-endpoints
