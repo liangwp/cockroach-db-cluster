@@ -57,7 +57,26 @@ Tested on the following:
 1. haproxy also serves the console as well as sql clients. (The latter has not
    been tested yet.)
     - https://localhost:8080
+
+### Create Database and User
+
+1. Edit `./scripts/create-db-and-user.sh`, to set the `DATABASE`, `USER`, and
+  `PASSWORD`.
+1. If necessary, `chmod +x ./scripts/create-db-and-user.sh`.
+1. Run `./scripts/create-db-and-user.sh`.
+1. Some other program should be able to use this database, through this user,
+   either using a cockroachdb client or a postgres client.
+
+### Stop the Cluster
+
 1. `docker compose down`: Stop the cluster
+    - Does not destroy the cluster or its data.
     - Running `docker compose up` again will revive the cluster.
+
+### Clean Up the Entire Cluster
+
+This removes the entire cluster and its data.
+
+1. Stop the cluster (see above).
 1. `sudo ./scripts/destroy-cluster.sh`: Remove the certs and docker volumes that were
    created.

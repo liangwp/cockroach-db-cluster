@@ -162,12 +162,3 @@ services:
     networks:
       - default
     restart: unless-stopped
-
-
-# use the cockroach cli from one of the instances to reach another, using the root user and user cert
-# docker exec -it cockroach-db-cluster-cockroach-db-3-1 ./cockroach --host=cockroach-db-2.local:26257 --user=root --certs-dir=/certs --database defaultdb sql
-# docker exec -it cockroach-db-cluster-cockroach-db-3-1 ./cockroach --host=cockroach-db-1.local:26257 --user=root --certs-dir=/certs --database defaultdb sql
-
-# CREATE DATABASE IF NOT EXISTS pyserver;
-# CREATE USER IF NOT EXISTS pyserver WITH PASSWORD 'pyserver';
-# GRANT ALL ON DATABASE pyserver TO pyserver;

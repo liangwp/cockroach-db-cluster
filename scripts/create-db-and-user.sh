@@ -3,9 +3,9 @@
 # This file should be edited to create databases and users in the cluster.
 # For simplicity, for now, we create one database per user.
 
-DATABASE=some-db
-USER=some-user
-PASSWORD=some-pswd
+DATABASE=some_db
+USER=some_user
+PASSWORD=some_pswd
 
 # connect to the loadbalancer instance
 INTERNAL_CLUSTER_INSTANCE=cockroach-db.local:26257
@@ -34,6 +34,13 @@ docker compose run --entrypoint "cockroach sql" \
     cluster-init \
     --host=$INTERNAL_CLUSTER_INSTANCE \
     --certs-dir=/certs \
-    --execute "CREATE DATABASE IF NOT EXISTS pyserver;" \
-    --execute "CREATE USER IF NOT EXISTS pyserver WITH PASSWORD 'pyserver';" \
-    --execute "GRANT ALL ON DATABASE pyserver TO pyserver;"
+    --execute "CREATE DATABASE IF NOT EXISTS $DATABASE;" \
+    --execute "CREATE USER IF NOT EXISTS $USER WITH PASSWORD '$PASSWORD';" \
+    --execute "GRANT ALL ON DATABASE $DATABASE TO $USER;"
+
+# docker login using the new user, and run some commands:
+# docker compose run --entrypoint "cockroach sql" cluster-init --host=cockroach-db.local:26257 --certs-dir=/certs --user=some_user --database=some_db
+# > CREATE TABLE pyserver_test (id INT PRIMARY KEY, name STRING);
+# > INSERT INTO pyserver_test (id, name) VALUES (1, 'frog');
+# > SELECT * FROM pyserver_test;
+# > DROP TABLE pyserver_test;
