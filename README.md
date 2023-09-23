@@ -18,10 +18,11 @@ This is suitable for:
           already exists
 - [x] Load balancing across cluster
     - [x] for http console
-    - [ ] for sql clients (not yet tested)
-- [ ] Set up automation for using the cluster with multiple projects
+    - [x] for cockroachdb sql client
+- [x] Set up automation for using the cluster with multiple projects
       (assume one project uses one database)
-    - [ ] Script for creating a database and its user
+    - [x] Script for creating a database and its user
+- [ ] Example python code to use this cluster
 
 ### Prerequisites
 
