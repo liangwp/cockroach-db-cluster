@@ -23,10 +23,11 @@ This is suitable for:
       (assume one project uses one database)
     - [x] Script for creating a database and its user
 - [ ] Example nodejs code to use this cluster
+    - pg and pg-migrate ?
     - knex.js?
     - https://sqorn.org/benchmarks.html ?
 - [ ] Example python code to use this cluster
-    - sqlalchemy core / alembic?
+    - sqlalchemy core and alembic?
 
 ### Prerequisites
 
