@@ -22,7 +22,11 @@ This is suitable for:
 - [x] Set up automation for using the cluster with multiple projects
       (assume one project uses one database)
     - [x] Script for creating a database and its user
+- [ ] Example nodejs code to use this cluster
+    - knex.js?
+    - https://sqorn.org/benchmarks.html ?
 - [ ] Example python code to use this cluster
+    - sqlalchemy core / alembic?
 
 ### Prerequisites
 
