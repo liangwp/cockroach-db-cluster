@@ -1,0 +1,19 @@
+networks:
+  default:
+    name: cockroachdb-net
+    external: true
+
+services:
+  nodejs-client:
+    image: nodejs-client:latest
+    build: .
+    container_name: nodejs-client
+    environment:
+      - DATABASE=test_app
+      - USER=test_app_user
+      - PASSWORD=test_app_pswd
+      - DATABASE_HOST=cockroach-db.local:26257
+      # for testing
+      # - DATABASE_HOST=postgres-db-1.local:5432
+    networks:
+      - default

@@ -1,0 +1,34 @@
+networks:
+  default:
+    name: cockroachdb-net
+    external: true
+
+volumes:
+  roach-db-postgres-data:
+    name: roach-db-postgres-data
+
+services:
+  postgres:
+    image: postgres:16-bookworm
+    hostname: postgres-db-1.local
+    environment:
+      # for actual posgres instance
+      - POSTGRES_USER=test_app_user
+      - POSTGRES_PASSWORD=test_app_pswd
+      - POSTGRES_DB=test_app
+      # for psql
+      - PGUSER=test_app_user
+      - PGPASSWORD=test_app_pswd
+      - PGDATABASE=test_app
+    volumes:
+      - roach-db-postgres-data:/var/lib/postgresql/data # persist database
+    stop_grace_period: 120s # see https://github.com/docker-library/postgres/issues/544
+    healthcheck:
+      test: psql -h localhost --username=test_app_user --list # this checks if PostgreSQL is ready
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
+    networks:
+      - default
