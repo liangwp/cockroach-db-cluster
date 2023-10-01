@@ -5,10 +5,10 @@ import psycopg # this is psycopg3
 import os
 import time
 
-dbhost = os.environ['DATABASE_HOST']
-dbname = os.environ['DATABASE']
-user = os.environ['USER']
-pswd = os.environ['PASSWORD']
+dbhost = os.environ['DB_HOST']
+dbname = os.environ['DB_NAME']
+user = os.environ['DB_USER']
+pswd = os.environ['DB_PSWD']
 
 
 # Connect to an existing database

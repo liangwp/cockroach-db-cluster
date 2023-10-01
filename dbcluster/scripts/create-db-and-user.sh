@@ -4,9 +4,9 @@
 # For simplicity, for now, we create one database per user.
 
 # hyphens not allowed in database or user name
-DATABASE=test_app
-USER=test_app_user
-PASSWORD=test_app_pswd
+DB_NAME=test_app
+DB_USER=test_app_user
+DB_PSWD=test_app_pswd
 
 # connect to the loadbalancer instance
 COCKROACH_HOST=cockroach-db.local:26257
@@ -36,9 +36,9 @@ docker compose -f ./dbcluster/docker-compose.yml \
     cluster-init \
     --host=$COCKROACH_HOST \
     --certs-dir=/certs \
-    --execute "CREATE DATABASE IF NOT EXISTS $DATABASE;" \
-    --execute "CREATE USER IF NOT EXISTS $USER WITH PASSWORD '$PASSWORD';" \
-    --execute "GRANT ALL ON DATABASE $DATABASE TO $USER;"
+    --execute "CREATE DATABASE IF NOT EXISTS $DB_NAME;" \
+    --execute "CREATE USER IF NOT EXISTS $DB_USER WITH PASSWORD '$DB_PSWD';" \
+    --execute "GRANT ALL ON DATABASE $DB_NAME TO $DB_USER;"
 
 # docker login using the new user, and run some commands:
 # docker compose run --entrypoint "cockroach sql" cluster-init --host=cockroach-db.local:26257 --certs-dir=/certs --user=some_user --database=some_db

@@ -19,6 +19,10 @@ COPY pyproject.toml poetry.lock /workspace/
 
 RUN poetry install
 
+# Set up migrations
+COPY ./yoyo.ini /workspace/yoyo.ini
+COPY ./migrations /workspace/migrations/
+
 COPY ./src /workspace/src/
 
 ENTRYPOINT [ "dumb-init", "--" ]

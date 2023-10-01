@@ -71,8 +71,9 @@ Tested on the following:
 
 ### Create Database and User
 
-1. Edit `./dbcluster/scripts/create-db-and-user.sh`, to set the `DATABASE`, `USER`, and
-  `PASSWORD`. These must agree with whatever is set in the client apps.
+1. Edit `./dbcluster/scripts/create-db-and-user.sh`, to set the `DB_NAME`,
+   `DB_USER`, and `DB_PSWD`. These must agree with whatever is set in the
+   client apps.
 1. If necessary, `chmod +x ./dbcluster/scripts/create-db-and-user.sh`.
 1. Run `./dbcluster/scripts/create-db-and-user.sh`.
 1. Some other program should be able to use this database, through this user,
@@ -93,7 +94,7 @@ Tested on the following:
    AND [mysql cli](https://dev.mysql.com/doc/refman/8.0/en/mysql.html):
     - List databases: `\l` or `SHOW DATABASES;`
     - Connect to a database: `\c system` or `USE DATABASE system`
-    - List tables: `\d` or `SHOW TABLES;`
+    - List tables: `\dt` or `SHOW TABLES;`
     - All of the example client apps will use the database `test_app` (as 
       mentioned in [Create Database and User](#create-database-and-user) above).
 
@@ -110,11 +111,33 @@ postgres or cockroachdb.
 
 #### Python psycopg3 client
 
+Normal python code:
+
 1. Edit `./python-psycopg3/docker-compose.yml`, uncomment environment
    variables to choose either cockroachdb or postgres.
 1. `docker compose -f ./python-psycopg3/docker-compose.yml up --build`
 1. see some logs...
 1. `docker compose -f ./python-psycopg3/docker-compose.yml down`
+
+Using yoyo migrations:
+
+1. Set up an interactive terminal to call yoyo commands:
+    ```
+    docker compose -f python-psycopg3/docker-compose.yml run python-psycopg3-client bash
+    ```
+1. Yoyo is installed in poetry environment, so call it through poetry:
+    ```
+    poetry run yoyo list
+    ```
+1. Perform all migrations, with verbose output:
+    ```
+    poetry run yoyo apply -vvv --batch
+    ```
+1. Rollback all migrations (requires interactive prompting):
+    ```
+    poetry run yoyo rollback -vvv --all
+    ```
+1. Also possible to [perform migrations using code](https://ollycope.com/software/yoyo/latest/#calling-yoyo-from-python-code)
 
 #### More clients WIP
 
