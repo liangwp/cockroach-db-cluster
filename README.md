@@ -78,6 +78,25 @@ Tested on the following:
 1. Some other program should be able to use this database, through this user,
    either using a cockroachdb client or a postgres client.
 
+### Inspect Data using CLI
+
+1. Docker exec into cockroachdb through the loadbalancer (as the `root` user):
+    ```
+    docker compose -f ./dbcluster/docker-compose.yml \
+        run --no-deps --entrypoint "cockroach sql" \
+        cluster-init \
+        --host=cockroach-db.local \
+        --user=root \
+        --certs-dir=/certs
+    ```
+1. Commands are similar to [psql cli](https://www.postgresql.org/docs/current/app-psql.html)
+   AND [mysql cli](https://dev.mysql.com/doc/refman/8.0/en/mysql.html):
+    - List databases: `\l` or `SHOW DATABASES;`
+    - Connect to a database: `\c system` or `USE DATABASE system`
+    - List tables: `\d` or `SHOW TABLES;`
+    - All of the example client apps will use the database `test_app` (as 
+      mentioned in [Create Database and User](#create-database-and-user) above).
+
 ### Run test applications (WIP)
 
 Example code is provided for testing with the cluster, compared with postgres.
