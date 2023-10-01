@@ -24,13 +24,14 @@ This is suitable for:
     - [x] Script for creating a database and its user
 - [x] Set up postgres for feature comparison with cockroachdb
 - [ ] Example nodejs code to use this cluster
-    - pg and pg-migrate ?
-    - knex.js?
-    - https://sqorn.org/benchmarks.html ?
+    - [ ] pg and pg-migrate ?
+    - [ ] knex.js?
+    - [ ] https://sqorn.org/benchmarks.html ?
 - [ ] Example python code to use this cluster
     - [x] using psycopg3 directly
-    - sqlalchemy core and alembic? (alembic is too massive to be useful)
-    - sqlalchemy core and yoyo-migrations?
+    - [x] using yoyo migrations
+    - ~~[ ] sqlalchemy core and alembic? (alembic is too coupled with sqlalchemy for my taste)~~
+    - [ ] sqlalchemy core and yoyo-migrations?
 
 ### Prerequisites
 
