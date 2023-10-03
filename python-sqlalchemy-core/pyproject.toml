@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "python-sqlalchemy-core"
+version = "0.1.0"
+description = ""
+authors = ["weipang <liangwp@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+yoyo-migrations = "^8.2.0"
+psycopg = {extras = ["binary", "pool"], version = "^3.1.12"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.21"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

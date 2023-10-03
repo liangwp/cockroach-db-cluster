@@ -28,10 +28,14 @@ This is suitable for:
     - [ ] knex.js?
     - [ ] https://sqorn.org/benchmarks.html ?
 - [ ] Example python code to use this cluster
-    - [x] using psycopg3 directly
-    - [x] using yoyo migrations
+    - `./python-psycopg3`
+        - [x] using psycopg3 directly
+        - [x] using yoyo migrations through terminal
+            - docker exec into the container to run the `yoyo` cli
     - ~~[ ] sqlalchemy core and alembic? (alembic is too coupled with sqlalchemy for my taste)~~
-    - [ ] sqlalchemy core and yoyo-migrations?
+    - `./python-sql-alchemy-core`
+        - [x] yoyo migrations called from python code
+        - [ ] sqlalchemy-core for data manipulation
 
 ### Prerequisites
 
@@ -140,8 +144,19 @@ Using yoyo migrations:
     ```
 1. Also possible to [perform migrations using code](https://ollycope.com/software/yoyo/latest/#calling-yoyo-from-python-code)
 
-#### More clients WIP
+#### Python sqlalchemy client
 
+1. Reset all yoyo tables in the database (if yoyo cli was run in the psycopg3
+   client test).
+    - docker exec into one of the cockroachdb instances (see above)
+    - `\c test_app`: Connect to the `test_app` database
+    - `\dt`: List tables
+    - `DROP TABLE IF EXISTS _yoyo_log, _yoyo_migration, _yoyo_version, yoyo_lock`
+1. `docker compose -f ./python-sqlalchemy-core/docker-compose.yml up --build`
+1. (WIP) see some logs...
+1. `docker compose -f ./python-sqlalchemy-core/docker-compose.yml down`
+
+#### More Clients WIP
 
 ### Stop the Cluster
 

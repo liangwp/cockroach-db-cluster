@@ -1,0 +1,20 @@
+networks:
+  default:
+    name: cockroachdb-net
+    external: true
+
+services:
+  python-psycopg3-client:
+    image: python-psycopg3-client:latest
+    build: .
+    container_name: python-psycopg3-client
+    environment:
+      - DB_NAME=test_app
+      - DB_USER=test_app_user
+      - DB_PSWD=test_app_pswd
+      - DB_HOST=cockroach-db.local:26257
+      # for testing
+      # - DB_HOST=postgres-db-1.local:5432
+    networks:
+      - default
+
