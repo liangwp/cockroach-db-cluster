@@ -21,9 +21,9 @@ with psycopg.connect(f'postgresql://{user}:{pswd}@{dbhost}/{dbname}') as conn:
         # Execute a command: this creates a new table
         cur.execute("""
             CREATE TABLE IF NOT EXISTS test_psycopg (
-                id serial PRIMARY KEY,
-                num integer,
-                data text)
+                id SERIAL PRIMARY KEY,
+                num INTEGER,
+                data TEXT)
             """)
 
         # Pass data to fill a query placeholders and let Psycopg perform

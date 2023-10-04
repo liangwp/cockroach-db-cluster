@@ -4,7 +4,7 @@ from yoyo import step
 # defining migration scripts.
 # https://ollycope.com/software/yoyo/latest/#migrations-as-python-scripts
 
-apply = 'CREATE TABLE test_sqlalchemy (id INT, value VARCHAR(20), value2 INT, PRIMARY KEY (id))'
+apply = 'CREATE TABLE test_sqlalchemy (id SERIAL PRIMARY KEY, value VARCHAR(20), value2 INT)'
 rollback = 'DROP TABLE test_sqlalchemy'
 
 steps = [
