@@ -8,10 +8,12 @@ import os
 import asyncio
 import random
 
+from sqlalchemy import MetaData
+from tables import reflect_table, manually_set_up_table
+
 # WIP: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
 
 async def async_main():
-
     while True:
         print('hello world')
         await asyncio.sleep(2)
@@ -57,6 +59,24 @@ def synchronous_db_calls(connection_string):
             [{ "num": num1 }, { "num": num2 }] # parameter substitution, 2 rows
         )
         # implicit transaction and commit using engine.begin()
+
+    # try reflecting a table
+    metadata_obj = MetaData()
+    test_table = reflect_table(engine, metadata_obj, 'test_sqlalchemy')
+    print(f'Reflected table:')
+    for col in test_table.c.values():
+        print(f'--- {col=}')
+    print()
+
+    # try setting up the table manually
+    metadata_obj_2 = MetaData()
+    test_table2 = manually_set_up_table(engine, metadata_obj_2, 'test_sqlalchemy')
+    print(f'Manual table (ends up different from reflecting):')
+    for col in test_table2.c.values():
+        print(f'--- {col=}')
+    print()
+
+    # TODO: write into the table using both variants. Maybe both should work...
 
     engine.dispose()
 
